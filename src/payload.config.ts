@@ -1,18 +1,20 @@
-import { postgresAdapter } from '@payloadcms/db-postgres';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
-import path from 'path';
-import { Block, buildConfig, CollectionConfig } from 'payload';
-import { fileURLToPath } from 'url';
-import sharp from 'sharp';
+import { postgresAdapter } from "@payloadcms/db-postgres";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import path from "path";
+import { Block, buildConfig, CollectionConfig } from "payload";
+import { fileURLToPath } from "url";
+import sharp from "sharp";
 import { migrations } from "./migrations";
 
-import { Users } from './collections/Users';
-import { Media } from './collections/Media';
+import { Users } from "./collections/Users";
+import { Media } from "./collections/Media";
+import { Books } from "./collections/Books";
+import { Authors } from "./collections/Authors";
+import { Genres } from "./collections/Genres";
+import { TargetAudiences } from "./collections/TargetAudiences";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
-
-
 
 /**
  * Collections
@@ -21,7 +23,11 @@ const dirname = path.dirname(filename);
 
 const collections: CollectionConfig[] = [
   Users,
-  Media
+  Books,
+  Authors,
+  Genres,
+  TargetAudiences,
+  Media,
 ];
 
 /**
@@ -29,8 +35,6 @@ const collections: CollectionConfig[] = [
  * Legg blokker inn i dette arrayet for å inkludere dem.
  */
 const blocks: Block[] = [];
-
-
 
 /**
  * Payload-konfigurasjon
@@ -48,15 +52,15 @@ export default buildConfig({
   blocks,
   collections,
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
-    outputFile: path.resolve(dirname, 'payload-types.ts'),
+    outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URL || '',
+      connectionString: process.env.DATABASE_URL || "",
     },
-    prodMigrations: migrations
+    prodMigrations: migrations,
   }),
   sharp,
   plugins: [],
